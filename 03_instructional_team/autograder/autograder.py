@@ -87,7 +87,7 @@ else:
 if os.path.isfile(f'{base_dir}/dir2/file3.txt'):
     with open(f'{base_dir}/dir2/file3.txt', 'r') as f:
         file3 = f.read()
-    if file3.strip().lower() == 'hello world':
+    if re.sub(r'[^a-z]', '', file3.lower()) == 'helloworld':
         s.append({'question': 4, 'status': 1})
     else:
         s.append({
@@ -158,8 +158,10 @@ else:
 indx = [i for i, x in enumerate(script_rslt) if x['command'].startswith('ls')]
 if len(indx) > 0:
     indx = indx[-1:]
-    if any(['dir4' in script_rslt[i]['output'] for i in indx]) or any(
-        ['dir5' in script_rslt[i]['output'] for i in indx]):
+    if any([
+            'assignment.sh' in script_rslt[i]['output'] for i in indx
+    ]) and not (any(['dir4' in script_rslt[i]['output'] for i in indx])
+                or any(['dir5' in script_rslt[i]['output'] for i in indx])):
         s.append({
             'question': 8,
             'status': 0,
