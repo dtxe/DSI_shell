@@ -174,7 +174,7 @@ else:
     })
 
 ############################################################################################################
-# Step 10: Check if a commit with ID 4207a6b14ce5624a8a3d30c5338efecb6fea20ac is in the commit history
+# Step 10: Check if the coworker's commit ID is in the commit history
 commit_id = '4207a6b14ce5624a8a3d30c5338efecb6fea20ac'
 
 try:
