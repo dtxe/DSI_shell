@@ -7,7 +7,7 @@ You've been asked to update this script to also automate the initial organizatio
 
 ## Instructions
 #### Setup
-* Fork this Shell learning module repository following these [instructions](https://github.com/UofT-DSI/onboarding/blob/main/onboarding_documents/submissions.md#setting-up)
+* If you have not already done so, fork this Shell learning module repository following these [instructions](https://github.com/UofT-DSI/onboarding/blob/main/onboarding_documents/submissions.md#setting-up)
 
 #### Part 1: Update the data ingest script
 * Using the template in `assignment.sh`, fill in the correct commands to complete the shell script described by the comments
@@ -20,8 +20,25 @@ You've been asked to incorporate their changes, if sensible, then make one big p
 $ git pull https://github.com/UofT-DSI/shell coworker-changes --no-rebase
 ```
 
-#### Submit your changes for automatic testing and peer review by your coworkers
+#### Part 3: Test your script
 1. Commit your changes in the `assignment` branch
+2. (Optional) Copy your script to a blank, clean directory
+```bash
+$ mkdir assignment_test_clean
+$ cp assignment.sh assignment_test_clean
+$ cd assignment_test_clean
+```
+3. Run your script:
+```bash
+$ bash assignment.sh
+```
+4. Manually verify that your script does what you expect
+    * Did it create the expected directories?
+    * Did it move/copy the files as expected?
+    * Do files you expect to be deleted still exist?
+
+#### Submit your changes for automatic testing and peer review by your coworkers
+1. Confirm that you have committed your changes in the `assignment` branch (eg. with `git status`)
 1. Click on the **Actions** tab in your repository and click the button to enable workflows
 1. Create a pull request from your repo's `assignment` → your repo's `main`
 1. After a few minutes, the autograder should post a comment in your PR with your assignment grade
