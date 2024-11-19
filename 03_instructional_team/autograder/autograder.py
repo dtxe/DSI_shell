@@ -29,47 +29,53 @@ script_rslt = [{
     'output': x.split('\n')[1:]
 } for x in script_rslt]
 
+qn = 0
+
 ############################################################################################################
 # Step 1: Check if 'data' directory exists
+qn += 1
 if os.path.isdir(os.path.join(working_dir, 'data')):
-    s.append({'question': 1, 'status': 1})
+    s.append({'question': qn, 'status': 1})
 else:
-    s.append({'question': 1, 'status': 0, 'comment': 'data directory does not exist'})
+    s.append({'question': qn, 'status': 0, 'comment': 'data directory does not exist'})
 
 ############################################################################################################
 # Step 2: Check that 'rawdata' directory was moved to 'data/raw'
+qn += 1
 if os.path.isdir(os.path.join(working_dir, 'data/raw')) and not os.path.exists(os.path.join(working_dir, 'rawdata')):
-    s.append({'question': 2, 'status': 1})
+    s.append({'question': qn, 'status': 1})
 else:
-    s.append({'question': 2, 'status': 0, 'comment': 'rawdata not moved to data/raw'})
+    s.append({'question': qn, 'status': 0, 'comment': 'rawdata not moved to data/raw'})
 
 ############################################################################################################
 # Step 4: Check that 'ls data/raw' command was run
+qn += 1
 indx = [i for i, x in enumerate(script_rslt) if x['command'].startswith('ls')]
 if len(indx) > 0:
     if any(['data/raw' in script_rslt[i]['command'] for i in indx]):
-        s.append({'question': 4, 'status': 1})
+        s.append({'question': qn, 'status': 1})
     else:
         s.append({
-            'question': 4,
+            'question': qn,
             'status': 0,
             'comment': '`ls` command run on wrong directory'
         })
 else:
-    s.append({'question': 4, 'status': 0, 'comment': '`ls` command not run'})
+    s.append({'question': qn, 'status': 0, 'comment': '`ls` command not run'})
 
 ############################################################################################################
 # Step 5: Check that in 'data/processed', the directories server_logs, user_logs, and event_logs were created
+qn += 1
 dirs = [
     'data/processed/server_logs', 'data/processed/user_logs',
     'data/processed/event_logs'
 ]
 if all([os.path.isdir(os.path.join(working_dir, d)) for d in dirs]):
-    s.append({'question': 5, 'status': 1})
+    s.append({'question': qn, 'status': 1})
 else:
     missing_dirs = [d for d in dirs if not os.path.isdir(os.path.join(working_dir, d))]
     s.append({
-        'question': 5,
+        'question': qn,
         'status': 0,
         'comment': f'Missing directories: {", ".join(missing_dirs)}'
     })
@@ -98,19 +104,22 @@ def check_logs(log_type):
             }
 
 # Check server logs
+qn += 1
 result = check_logs('server')
 if result['status'] == 1:
-    s.append({'question': 6, 'status': 1})
+    s.append({'question': qn, 'status': 1})
 else:
-    s.append({'question': 6, 'status': 0, 'comment': result['comment']})
+    s.append({'question': qn, 'status': 0, 'comment': result['comment']})
 
 ############################################################################################################
 # Step 7: Check that user logs and event logs were copied appropriately
+qn += 1
+
 result_user = check_logs('user')
 result_event = check_logs('event')
 
 if result_user['status'] == 1 and result_event['status'] == 1:
-    s.append({'question': 7, 'status': 1})
+    s.append({'question': qn, 'status': 1})
 else:
     comments = []
     if result_user['status'] == 0:
@@ -118,18 +127,20 @@ else:
     if result_event['status'] == 0:
         comments.append(result_event['comment'])
     s.append({
-        'question': 7,
+        'question': qn,
         'status': 0,
         'comment': '; '.join(comments)
     })
 
 ############################################################################################################
 # Step 8: Check that files containing 'ipaddr' in the filename were removed from 'data/raw' and 'data/processed/user_logs'
+qn += 1
+
 ipaddr_files_raw = glob.glob(os.path.join(working_dir, 'data/raw/*ipaddr*'))
 ipaddr_files_user_logs = glob.glob(os.path.join(working_dir, 'data/processed/user_logs/*ipaddr*'))
 
 if not ipaddr_files_raw and not ipaddr_files_user_logs:
-    s.append({'question': 8, 'status': 1})
+    s.append({'question': qn, 'status': 1})
 else:
     comments = []
     if ipaddr_files_raw:
@@ -137,11 +148,13 @@ else:
     if ipaddr_files_user_logs:
         comments.append(
             'One or more files with ipaddr in data/processed/user_logs not removed')
-    s.append({'question': 8, 'status': 0, 'comment': '; '.join(comments)})
+    s.append({'question': qn, 'status': 0, 'comment': '; '.join(comments)})
 
 
 ############################################################################################################
 # Step 9: Check that 'data/inventory.txt' was created and contains all files in 'data/processed' subfolders
+qn += 1
+
 if os.path.isfile(os.path.join(working_dir, 'data/inventory.txt')):
     with open(os.path.join(working_dir, 'data/inventory.txt'), 'r') as f:
         inventory_files = [line.strip() for line in f.readlines()]
@@ -159,22 +172,23 @@ if os.path.isfile(os.path.join(working_dir, 'data/inventory.txt')):
     files_in_inventory = [any([f in x for x in inventory_files]) for f in processed_files]
 
     if foldername_in_inventory and all(files_in_inventory):
-        s.append({'question': 9, 'status': 1})
+        s.append({'question': qn, 'status': 1})
     else:
         s.append({
-            'question': 9,
+            'question': qn,
             'status': 0,
             'comment': 'data/inventory.txt does not contain all files in data/processed'
         })
 else:
     s.append({
-        'question': 9,
+        'question': qn,
         'status': 0,
         'comment': 'data/inventory.txt does not exist'
     })
 
 ############################################################################################################
 # Step 10: Check if the coworker's commit ID is in the commit history
+qn += 1
 commit_id = '4207a6b14ce5624a8a3d30c5338efecb6fea20ac'
 
 try:
@@ -182,13 +196,13 @@ try:
     cmd = f"git rev-list HEAD | grep -i '{commit_id}' | wc -l"
     result = subprocess.check_output(cmd, shell=True, universal_newlines=True).strip()
     if int(result) > 0:
-        s.append({'question': 10, 'status': 1})
+        s.append({'question': qn, 'status': 1})
     else:
-        s.append({'question': 10, 'status': 0, 'comment': f'Commit {commit_id} from `coworker-changes` branch not found in commit history'})
+        s.append({'question': qn, 'status': 0, 'comment': f'Commit {commit_id} from `coworker-changes` branch not found in commit history'})
         print('|' + result + '|')
 
 except Exception as e:
-    s.append({'question': 10, 'status': 0, 'comment': f'Error checking git commit history.'})
+    s.append({'question': qn, 'status': 0, 'comment': f'Error checking git commit history.'})
     e.print_stack()
     e.print_exc()
 

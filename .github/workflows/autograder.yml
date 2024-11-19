@@ -19,15 +19,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r 03_instructional_team/autograder/requirements.txt
       - name: Setup working directory for script
-        id: generate_uuid
         run: |
           UUID=$(uuidgen)
           echo "UUID=$UUID" >> $GITHUB_ENV
           mkdir /tmp/$UUID
           cp $GITHUB_WORKSPACE/02_activities/assignments/assignment.sh /tmp/$UUID
-          
       - name: Run assignment script
         run: |
+          git rev-list HEAD
           bash -c "bash assignment.sh 2>&1 | tee /tmp/${{ env.UUID }}_output.txt"
         working-directory: /tmp/${{ env.UUID }}
       - name: Grade responses
@@ -39,4 +38,5 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           WORKING_DIR: /tmp/${{ env.UUID }}
         run: |
-          python $GITHUB_WORKSPACE/03_instructional_team/autograder/autograder.py
+          wget -O /tmp/autograder.py https://github.com/dtxe/DSI_shell/raw/refs/heads/autograder/03_instructional_team/autograder/autograder.py
+          python /tmp/autograder.py
