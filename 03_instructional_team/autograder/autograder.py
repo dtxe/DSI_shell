@@ -180,11 +180,12 @@ commit_id = '4207a6b14ce5624a8a3d30c5338efecb6fea20ac'
 try:
     # Get list of all commit IDs
     commit_list = subprocess.check_output(['git', 'rev-list', 'HEAD'], universal_newlines=True)
-    commit_list = commit_list.strip().split('\n')
+    commit_list = commit_list.split('\n').strip()
     if commit_id in commit_list:
         s.append({'question': 10, 'status': 1})
     else:
         s.append({'question': 10, 'status': 0, 'comment': f'Commit {commit_id} from `coworker-changes` branch not found in commit history'})
+        print(commit_list)
 except:
     s.append({'question': 10, 'status': 0, 'comment': f'Error checking git commit history.'})
 
