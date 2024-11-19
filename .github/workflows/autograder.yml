@@ -26,7 +26,6 @@ jobs:
           cp $GITHUB_WORKSPACE/02_activities/assignments/assignment.sh /tmp/$UUID
       - name: Run assignment script
         run: |
-          git rev-list HEAD
           bash -c "bash assignment.sh 2>&1 | tee /tmp/${{ env.UUID }}_output.txt"
         working-directory: /tmp/${{ env.UUID }}
       - name: Grade responses

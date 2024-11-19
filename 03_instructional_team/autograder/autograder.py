@@ -12,6 +12,7 @@ github_repo_owner = os.environ["REPO_OWNER"]
 github_repo_name = os.environ["REPO_NAME"]
 github_pr_number = os.environ["PR_NUMBER"]
 working_dir = os.environ["WORKING_DIR"]
+github_workspace = os.environ["GITHUB_WORKSPACE"]
 
 status_c = '✅'
 status_i = '❌'
@@ -194,7 +195,7 @@ commit_id = '4207a6b14ce5624a8a3d30c5338efecb6fea20ac'
 try:
     # Check if commit_id is in git rev-list HEAD using grep and wc -l
     cmd = f"git rev-list HEAD | grep -i '{commit_id}' | wc -l"
-    result = subprocess.check_output(cmd, shell=True, universal_newlines=True).strip()
+    result = subprocess.check_output(cmd, cwd=github_workspace, shell=True, universal_newlines=True).strip()
     if int(result) > 0:
         s.append({'question': qn, 'status': 1})
     else:
