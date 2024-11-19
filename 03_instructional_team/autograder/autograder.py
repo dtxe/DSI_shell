@@ -178,17 +178,19 @@ else:
 commit_id = '4207a6b14ce5624a8a3d30c5338efecb6fea20ac'
 
 try:
-    # Get list of all commit IDs
-    commit_list = subprocess.check_output(['git', 'rev-list', 'HEAD'], universal_newlines=True)
-    commit_list = commit_list.split('\n')
-    commit_list = [x.strip() for x in commit_list if isinstance(x, str)]
-    if commit_id in commit_list:
+    # Check if commit_id is in git rev-list HEAD using grep and wc -l
+    cmd = f"git rev-list HEAD | grep -i '{commit_id}' | wc -l"
+    result = subprocess.check_output(cmd, shell=True, universal_newlines=True).strip()
+    if int(result) > 0:
         s.append({'question': 10, 'status': 1})
     else:
         s.append({'question': 10, 'status': 0, 'comment': f'Commit {commit_id} from `coworker-changes` branch not found in commit history'})
-        print(commit_list)
-except:
+        print('|' + result + '|')
+
+except Exception as e:
     s.append({'question': 10, 'status': 0, 'comment': f'Error checking git commit history.'})
+    e.print_stack()
+    e.print_exc()
 
 
 ############################################################################################################
