@@ -180,7 +180,8 @@ commit_id = '4207a6b14ce5624a8a3d30c5338efecb6fea20ac'
 try:
     # Get list of all commit IDs
     commit_list = subprocess.check_output(['git', 'rev-list', 'HEAD'], universal_newlines=True)
-    commit_list = commit_list.split('\n').strip()
+    commit_list = commit_list.split('\n')
+    commit_list = [x.strip() for x in commit_list if isinstance(x, str)]
     if commit_id in commit_list:
         s.append({'question': 10, 'status': 1})
     else:
