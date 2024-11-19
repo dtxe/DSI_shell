@@ -10,12 +10,46 @@ github_step_output = os.environ['GITHUB_STEP_SUMMARY']
 github_token = os.environ["GITHUB_TOKEN"]
 github_repo_owner = os.environ["REPO_OWNER"]
 github_repo_name = os.environ["REPO_NAME"]
+github_repo_branch = os.environ["REPO_BRANCH"]
 github_pr_number = os.environ["PR_NUMBER"]
-working_dir = os.environ["WORKING_DIR"]
-github_workspace = os.environ["GITHUB_WORKSPACE"]
 
 status_c = '✅'
 status_i = '❌'
+
+
+# functions
+def is_commit_in_branch(owner, repo, branch, commit_id, token=None):
+    """
+    Check if a commit ID is in the history of a branch in a GitHub repository.
+
+    :param owner: Repository owner's username.
+    :param repo: Repository name.
+    :param branch: Branch name.
+    :param commit_id: The commit SHA to check.
+    :param token: (Optional) Personal access token for authenticated requests.
+    :return: True if the commit is in the branch history, False otherwise.
+    """
+    url = f'https://api.github.com/repos/{owner}/{repo}/compare/{commit_id}...{branch}'
+    headers = {}
+    if token:
+        headers['Authorization'] = f'token {token}'
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        print(f"Error: Unable to compare commits. HTTP Status Code: {response.status_code}")
+        print(f"Message: {response.json().get('message', '')}")
+        return False
+
+    data = response.json()
+    status = data.get('status')
+
+    if status in ('ahead', 'identical'):
+        print(f"Commit {commit_id} is in the history of branch {branch}.")
+        return True
+    else:
+        print(f"Commit {commit_id} is NOT in the history of branch {branch}.")
+        return False
 
 # score table
 s = []
@@ -194,9 +228,8 @@ commit_id = '4207a6b14ce5624a8a3d30c5338efecb6fea20ac'
 
 try:
     # Check if commit_id is in git rev-list HEAD using grep and wc -l
-    cmd = f"git rev-list HEAD | grep -i '{commit_id}' | wc -l"
-    result = subprocess.check_output(cmd, cwd=github_workspace, shell=True, universal_newlines=True).strip()
-    if int(result) > 0:
+    result = is_commit_in_branch(github_repo_owner, github_repo_name, github_repo_branch, commit_id, github_token)
+    if result:
         s.append({'question': qn, 'status': 1})
     else:
         s.append({'question': qn, 'status': 0, 'comment': f'Commit {commit_id} from `coworker-changes` branch not found in commit history'})
