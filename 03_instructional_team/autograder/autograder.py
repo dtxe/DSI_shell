@@ -12,6 +12,7 @@ github_repo_owner = os.environ["REPO_OWNER"]
 github_repo_name = os.environ["REPO_NAME"]
 github_repo_branch = os.environ["REPO_BRANCH"]
 github_pr_number = os.environ["PR_NUMBER"]
+working_dir = os.environ["WORKING_DIR"]
 
 status_c = '✅'
 status_i = '❌'
