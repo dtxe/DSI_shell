@@ -234,12 +234,10 @@ try:
         s.append({'question': qn, 'status': 1})
     else:
         s.append({'question': qn, 'status': 0, 'comment': f'Commit {commit_id} from `coworker-changes` branch not found in commit history'})
-        print('|' + result + '|')
 
 except Exception as e:
     s.append({'question': qn, 'status': 0, 'comment': f'Error checking git commit history.'})
-    e.print_stack()
-    e.print_exc()
+    print(f"Error checking git commit history: {e}")
 
 
 ############################################################################################################
