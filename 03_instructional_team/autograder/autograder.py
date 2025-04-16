@@ -53,17 +53,13 @@ def is_commit_in_branch(
     response.raise_for_status()
 
     # Step 3: Compare the commit with the branch in the given repository
-    compare_url = f'https://api.github.com/repos/{owner}/{repo}/compare/main...{branch}'
+    compare_url = f'https://api.github.com/repos/{owner}/{repo}/compare/{other_commit_sha}...{branch}'
     response = requests.get(compare_url, headers=headers)
     response.raise_for_status()
     compare_data = response.json()
 
-    commit_shas = [commit['sha'] for commit in compare_data['commits']]
-
     # If the status is 'ahead' or 'identical', the commit is in the history
-    print(f'Commit SHAs in {owner}/{repo}/{branch}: {commit_shas}')
-    return other_commit_sha in commit_shas
-
+    return compare_data['status'] in ['ahead', 'identical']
 
 # score table
 s = []

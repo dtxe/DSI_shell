@@ -11,47 +11,43 @@ You've been asked to update this script to also automate the initial organizatio
 1. **Forking the Repository**: If you have not already done so, fork this Shell learning module repository following these [instructions](https://github.com/UofT-DSI/onboarding/blob/main/onboarding_documents/submissions.md#setting-up). 
    - Forking creates a copy of the main repository in your GitHub account. This allows you to work on your version without affecting the original repository.
 2. **Enable GitHub Actions**: Click on the **Actions** tab in your repository and enable workflows if prompted.  
+   - The autograder is run using GitHub Actions. If this is not enabled, the autograder will not run.  
+
 <img src="./github_actions.png" width="500px">
 
-2. **Create a Branch for Your Work**: To keep your changes organized, create a new branch named `assignment`:
-   ```bash
-   git switch -c assignment
-   ```
+3. **Clone your forked repo**: Clone the repository so you can work on it locally
+    - Hint: Clone repositories using the command `git clone <your forked url>`
+
+4. **Create a Branch for Your Work**: Create a new branch named `assignment`:
+    - ⚠️ Don't complete your assignment in the main branch
+    - Hint: Create a new branch by running `git switch -c assignment` in your local clone of your forked repo.    
 
 ---
 
 ### Part 1: Update the Data Ingest Script
-1. **Modify the Script**: Using the template in ``02_activities/assignments/assignment.sh``, fill in the correct commands as described by the comments.
+1. **Modify the script**: Using the template in ``02_activities/assignments/assignment.sh``, fill in the correct commands as described by the comments.
     - It may help to paste your commands into the Terminal as you write your script (or vice versa) to test as you go
-2. **Test Your Script Locally**: Execute your script to ensure it works as expected. You may need to make additional tweaks and re-run it until you are satisfied with the results.
-3. **Commit Your Changes**: As you complete parts of your script and confirmed that it is working correctly, commit your changes to ensure your progress is saved.
-    ```bash
-    git commit assignment.sh -m "describe your changes here"
-    ```
+2. **Run and test your script**: Execute your script to ensure it works as expected. You may need to make additional tweaks and re-run it until you are satisfied with the results.
+    - Hint: Shell scripts can be run using `bash <your script filename>`
+    - Check if the expected directories are created.
+    - Verify that files are moved or copied as expected.
+    - Ensure that files that should be deleted are no longer present.
+3. **Commit your changes**: As you complete parts of your script and confirmed that it is working correctly, stage and commit your changes to ensure your progress is saved.
 
 ---
 
 ### Part 2: Merge in Updates from Your Coworkers
 Your coworkers have made some other changes to the script. You'll need to incorporate their updates and resolve any conflicts.
-1. **Merge the Updates**: Use the following command to pull in changes from the coworker's branch:
+1. **Merge updates**: Use the following command to pull in changes from the coworker's branch:
    ```bash
    git pull https://github.com/UofT-DSI/shell coworker-changes --no-rebase
    ```
 2. **Resolve Merge Conflicts**: If there are any conflicts, use ```git status``` to see which files are affected, resolve the conflicts manually, and then mark them as resolved.
-3. **Commit the Merge**: Once all conflicts are resolved, commit the merge.
 1. **Re-test Your Script**: Make sure that your script still works after merging the updates and make any changes as necessary
 
----
-
-### Part 3: Test Your Script
-2. **Run Your Script**:
-   ```bash
-   bash assignment.sh
-   ```
-3. **Verify the Output**:
-   - Check if the expected directories are created.
-   - Verify that files are moved or copied as expected.
-   - Ensure that files that should be deleted are no longer present.
+3. **Commit the Merge**: Once all conflicts are resolved:
+    1. stage the conflicted files, then
+    2. complete the merge by committing
 
 ---
 
@@ -61,10 +57,10 @@ Your coworkers have made some other changes to the script. You'll need to incorp
    git status
    ```
 3. **Create a Pull Request**:
-   - Open a pull request from your `assignment` branch to your repository's `main` branch.
+   - Open a pull request from your `assignment` branch to **your repository's** `main` branch.
    - The autograder will run automatically and post your assignment grade as a comment.
    - Ensure the pull request is **NOT** made to the `UofT-DSI` organization
-   - **Do not merge** your pull request until the end of the module. Your teaching team will only grade *open* pull requests.
+   - ⚠️ **Do not merge** your pull request until the end of the module. Your teaching team will only grade *open* pull requests.
 
 ---
 
